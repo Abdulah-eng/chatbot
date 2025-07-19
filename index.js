@@ -1,12 +1,8 @@
-const express = require("express");
-const bodyParser = require("body-parser");
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).send("Method Not Allowed");
+  }
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(bodyParser.json());
-
-app.post("/webhook", (req, res) => {
   const query = req.body.queryResult;
   const intent = query.intent.displayName;
 
@@ -28,15 +24,7 @@ app.post("/webhook", (req, res) => {
     responseText = `You're all set! We'll see you on *${date} at ${time}*. Please have your vehicle ready.`;
   }
 
-  res.json({
+  res.status(200).json({
     fulfillmentText: responseText,
   });
-});
-
-app.get("/", (req, res) => {
-  res.send("Dialogflow Webhook is live 🚀");
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+}
